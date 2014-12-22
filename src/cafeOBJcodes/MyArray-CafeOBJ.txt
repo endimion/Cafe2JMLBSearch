@@ -1,0 +1,51 @@
+mod* MyArray  {
+
+*[ma]*
+pr(INT)
+pr(EQL)
+pr(BOOL)
+
+-- observers
+bop getIndex : ma Int -> NzInt
+bop getSize : ma -> Int
+
+-- transitions
+bop setSize : ma Int -> ma
+bop setIndex : ma Int Int -> ma 
+
+-- variables
+var A : ma
+vars I V J : Int
+
+-- constant denoting the initial state of the array
+op initMa : -> ma
+
+-- initially
+eq getIndex(initMa,I) = -1 . 
+eq getSize(initMa) = 0 .
+
+-- setSize
+
+op c-setSize : Int ma -> Bool
+eq c-setSize(J,A) = (J >= 0) .
+
+ceq getSize(setSize(A,J)) = J if c-setSize(J,A) .
+ceq getIndex(setSize(A,J),I) = getIndex(A,I) if c-setSize(J,A) .
+
+bceq setSize(A,J) = A if not c-setSize(J,A) .
+
+
+-- setElementAt
+
+op c-setIndex : ma Int Int -> Bool
+eq c-setIndex(A,I,V) = (I >= 0) and (I < getSize(A)) and (V >= 0) .
+
+ceq getSize(setIndex(A,I,V)) = getSize(A) if c-setIndex(A,I,V) .
+ceq getIndex(setIndex(A,I,V),J) = V if c-setIndex(A,I,V) and (I = J) . 
+ceq getIndex(setIndex(A,I,V),J) = getIndex(A,J) if c-setIndex(A,I,V) and not (I = J) . 
+
+
+bceq setIndex(A,I,V) = A if not c-setIndex(A,I,V) .
+
+
+}

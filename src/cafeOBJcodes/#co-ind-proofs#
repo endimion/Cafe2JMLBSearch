@@ -1,0 +1,202 @@
+mod! co-Ind{
+pr(BINARYSEARCH)
+
+
+op _R[_]_ : ma Int ma -> Bool
+op _R2[_]_ : bs Int bs -> Bool
+
+var I : Int
+vars ma1 ma2 : ma
+vars B1 B2 : bs
+
+eq (ma1)R[I](ma2) = (getSize(ma1) = getSize(ma2)) and (getIndex(ma1,I) = getIndex(ma2,I))  .
+
+eq (B1)R2[I](B2) = (pivot(B1) = pivot(B2)) and (value(B1) = value(B2)) and (left(B1)= left(B2)) and
+    (right(B1) = right(B2)) and (found(B1) = found(B2)) and (return(B1) = return(B2)) and arr(B1)R[I]arr(B2) .
+
+
+
+}
+
+
+
+
+-- prove R[I] is a congruence relation for MyArray
+
+open co-Ind .
+
+op a : -> ma .
+op a' : -> ma .
+
+op i  : -> Int .
+op v : -> Int .
+
+-- eq (a)R[i](a') = true . 
+eq getSize(a) = getSize(a') . 
+eq getElementAt(a,i) = getElementAt(a',i) .
+
+-- 
+eq (v >= 0) = true .
+
+  red (setSize(a,v))R[i](setSize(a',v)) .
+
+close
+
+
+
+open co-Ind .
+
+op a : -> ma .
+op a' : -> ma .
+
+op i  : -> Int .
+op v : -> Int .
+
+-- eq (a)R[i](a') = true . 
+eq getSize(a) = getSize(a') . 
+eq getElementAt(a,i) = getElementAt(a',i) .
+
+-- 
+eq (v >= 0) = false .
+
+  red (setSize(a,v))R[i](setSize(a',v)) .
+
+close
+
+
+-- 
+open co-Ind .
+
+op a : -> ma .
+op a' : -> ma .
+
+op i  : -> Int .
+op j : -> Int .
+op v : -> Int .
+
+-- eq (a)R[i](a') = true . 
+eq getSize(a) = getSize(a') . 
+eq getElementAt(a,i) = getElementAt(a',i) .
+
+-- 
+
+  red setElementAt(a,j,v)R[i]setElementAt(a,j,v) .
+
+close
+
+
+-- prove R2 is a hidden congruence
+open co-Ind .
+
+op a : -> ma .
+op a' : -> ma .
+ops b1 b2 : -> bs .
+
+op i  : -> Int .
+op j : -> Int .
+op v : -> Int .
+
+-- eq (b1)R2[I](b2) = true . 
+eq pivot(b1) = pivot(b2) .
+eq value(b1) = value(b2) . 
+eq left(b1)= left(b2) . 
+eq right(b1) = right(b2) .
+eq found(b1) = found(b2) . 
+eq return(b1) = return(b2) .
+-- eq (arr(b1))R[I](arr(b2)) = true  .
+eq getSize(arr(b1)) = getSize(arr(b2)) .
+eq getIndex(arr(b1),I) = getIndex(arr(b2),I) .
+
+-- effective condition holds
+eq c-searchright(b1) = true .
+eq c-searchright(b2) = true .
+
+-- case splitting
+eq getIndex(arr(b1),((pivot(b1) + 1) + right(b1)) quo 2) = value(b1) .
+eq getIndex(arr(b2),((pivot(b2) + 1) + right(b2)) quo 2) = value(b2) .
+
+
+red searchright(b1)R2[i]searchright(b2) .
+
+close
+
+
+
+
+
+
+-- NOW YOU CAN PROVE THINGS USING R[]
+
+-- returns nor true nor false
+open co-Ind .
+
+op a : -> ma .
+op a' : -> ma .
+ops b1 b2 : -> bs .
+
+op i  : -> Int .
+op j : -> Int .
+op v : -> Int .
+
+-- red searchleft(searchright(b1))R2[i]searchright(searchleft(b1)) . 
+
+close
+
+
+
+
+-- returns nor true nor false
+open co-Ind .
+
+op a : -> ma .
+op a' : -> ma .
+ops b1 b2 : -> bs .
+
+op i  : -> Int .
+op j : -> Int .
+op v : -> Int .
+-- case splitting
+-- c-searchleft = true
+eq found(b1) = false .
+eq (pivot(b1) >= 0) = true . 
+eq (right(b1) = left(b1)) = false .
+eq (left(b1) >= 0) = true .
+eq (right(b1) >= 0) = true .
+eq (getIndex(arr(b1),pivot(b1)) > value(b1)) = true .
+eq (getIndex(arr(b1),pivot(b1)) < value(b1)) = false .
+
+
+red c-searchleft(b1) .
+red c-searchright(b1) .
+
+ red searchleft(searchright(b1))R2[i]searchleft(b1) . 
+
+close
+
+
+
+
+-- returns nor true nor false
+open co-Ind .
+
+op a : -> ma .
+op a' : -> ma .
+ops b1 b2 : -> bs .
+
+op i  : -> Int .
+op j : -> Int .
+op v : -> Int .
+-- case splitting
+-- c-searchleft = true
+eq found(b1) = false .
+eq (pivot(b1) >= 0) = true . 
+eq (right(b1) = left(b1)) = false .
+eq (left(b1) >= 0) = true .
+eq (right(b1) >= 0) = true .
+--
+eq (getIndex(arr(b1),pivot(b1)) > value(b1)) = false .
+eq (getIndex(arr(b1),pivot(b1)) < value(b1)) = true .
+
+ red searchright(searchleft(b1))R2[i]searchright(b1) . 
+
+close

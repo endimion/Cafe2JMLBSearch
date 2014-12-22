@@ -1,0 +1,59 @@
+mod* BINARYSEARCH  {
+*[bs]*
+
+pr(MyArray)
+pr(BOOL)
+pr(EQL)
+
+-- projection
+bop arr : bs -> ma
+
+-- observers
+bop pivot : bs -> Int
+bop value : bs -> Int
+bop left : bs -> Int
+bop right : bs -> Int
+bop found : bs -> Bool
+bop return : bs -> Int
+
+-- transitions
+bop searchleft : bs -> bs
+bop searchright : bs -> bs
+
+-- constants
+op init : -> bs
+op v : -> Int
+
+-- variables
+
+var S : bs
+
+
+-- initially
+
+eq left(init) = 0 .
+eq right(init) = getSize(arr(init)) .
+eq pivot(init) = (left(init) + right(init)) quo 2 .
+eq value(init) = v .
+eq found(init) = (getIndex(pivot(init),arr(init)) = value(init)) .
+ceq return(init) = -1 if found(init) = false . 
+ceq return(init) = pivot(init) if found(init) = true .
+
+-- searchright
+
+op c-searchright : bs -> Bool 
+eq c-searchright(S) = (found(S) = false) and (pivot(S) >= 0) and not(right(S) = left(S)) and (left(S) >= 0) 
+and (right(S) >= 0) and (getIndex(pivot(S),arr(S)) < value(S)) .
+
+ceq left(searchright(S)) = pivot(S) + 1 if c-searchright(S) .
+ceq right(searchright(S)) = right(S) if c-searchright(S) .
+ceq found(searchright(S)) = getIndex(((pivot(S) + 1) + right(S)) quo 2,arr(S)) = value(S) if c-searchright(S) .
+ceq pivot(searchright(S)) = ((pivot(S) + 1) + right(S)) quo 2 if c-searchright(S) .
+ceq return(searchright(S)) = ((pivot(S) + 1) + right(S)) quo 2 if c-searchright(S) 
+	and  (getIndex(((pivot(S) + 1) + right(S)) quo 2,arr(S)) = value(S)) .
+ 
+ceq return(searchright(S)) = -1 if c-searchright(S) 
+	and  not (getIndex(((pivot(S) + 1) + right(S)) quo 2,arr(S)) = value(S)) .
+
+ceq searchright(S) = S if not c-searchright(S) .  
+}

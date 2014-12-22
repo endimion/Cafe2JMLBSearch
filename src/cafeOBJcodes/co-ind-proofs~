@@ -1,0 +1,80 @@
+mod! co-Ind{
+pr(MyArray)
+
+
+op _R[_]_ : ma Int ma -> Bool
+
+var I : Int
+vars ma1 ma2 : ma
+
+eq (ma1)R[I](ma2) = (getSize(ma1) = getSize(ma2)) and (getElementAt(ma1,I) = getElementAt(ma2,I))  .
+}
+
+
+
+
+-- prove R[I] is a congruence relation for MyArray
+
+open co-Ind .
+
+op a : -> ma .
+op a' : -> ma .
+
+op i  : -> Int .
+op v : -> Int .
+
+-- eq (a)R[i](a') = true . 
+eq getSize(a) = getSize(a') . 
+eq getElementAt(a,i) = getElementAt(a',i) .
+
+-- 
+eq (v >= 0) = true .
+
+  red (setSize(a,v))R[i](setSize(a',v)) .
+
+close
+
+
+
+open co-Ind .
+
+op a : -> ma .
+op a' : -> ma .
+
+op i  : -> Int .
+op v : -> Int .
+
+-- eq (a)R[i](a') = true . 
+eq getSize(a) = getSize(a') . 
+eq getElementAt(a,i) = getElementAt(a',i) .
+
+-- 
+eq (v >= 0) = false .
+
+  red (setSize(a,v))R[i](setSize(a',v)) .
+
+close
+
+
+-- 
+open co-Ind .
+
+op a : -> ma .
+op a' : -> ma .
+
+op i  : -> Int .
+op j : -> Int .
+op v : -> Int .
+
+-- eq (a)R[i](a') = true . 
+eq getSize(a) = getSize(a') . 
+eq getElementAt(a,i) = getElementAt(a',i) .
+
+-- 
+
+  red setElementAt(a,j,v)R[i]setElementAt(a,j,v) .
+
+close
+
+
+-- NOW YOU CAN PROVE THINGS USING R[]
